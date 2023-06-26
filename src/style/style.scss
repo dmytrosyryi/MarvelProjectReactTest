@@ -65,6 +65,8 @@ main {
     position: relative;
 }
 
+body { background: red }
+
 .pulse {
     animation: pulse 1.5s ease-in-out .5s infinite
 }

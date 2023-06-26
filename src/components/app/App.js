@@ -1,4 +1,5 @@
-import { Component } from "react/cjs/react.production.min";
+
+import React, { useState } from 'react';
 
 import AppHeader from "../appHeader/AppHeader";
 import RandomChar from "../randomChar/RandomChar";
@@ -8,20 +9,11 @@ import ErrorBoundary from "../errorBoundary/ErrorBoundary";
 
 import decoration from '../../resources/img/vision.png';
 
-class App extends Component {
-    state = {
-        selectedChar: null
-    }
+const App = () => {
 
-    onSelectedChar = (id) => {
-        this.scrollToCharInfo()
-        this.setState({
-            selectedChar: id
-        })
+    const [selectedChar, setChar] = useState(null)
 
-    }
-
-    scrollToCharInfo = () => {
+    const scrollToCharInfo = () => {
         const scrollBox = document.querySelector('.char__info')
         if (scrollBox) {
             scrollBox.scrollIntoView({ behavior: "smooth" })
@@ -29,27 +21,32 @@ class App extends Component {
 
     }
 
-    render() {
-        return (
-            <div className="app">
-                <AppHeader />
-                <main>
-                    <ErrorBoundary>
-                        <RandomChar />
-                    </ErrorBoundary>
-                    <div className="char__content">
-                        <ErrorBoundary>
-                            <CharList onSelectedChar={this.onSelectedChar} />
-                        </ErrorBoundary>
-                        <ErrorBoundary>
-                            <CharInfo charId={this.state.selectedChar} />
-                        </ErrorBoundary>
-                    </div>
-                    <img className="bg-decoration" src={decoration} alt="vision" />
-                </main>
-            </div>
-        )
+    const onSelectedChar = (id) => {
+        scrollToCharInfo()
+        setChar(id)
     }
+
+
+    return (
+        <div className="app">
+            <AppHeader />
+            <main>
+                <ErrorBoundary>
+                    <RandomChar />
+                </ErrorBoundary>
+                <div className="char__content">
+                    <ErrorBoundary>
+                        <CharList onSelectedChar={onSelectedChar} />
+                    </ErrorBoundary>
+                    <ErrorBoundary>
+                        <CharInfo charId={selectedChar} />
+                    </ErrorBoundary>
+                </div>
+                <img className="bg-decoration" src={decoration} alt="vision" />
+            </main>
+        </div>
+    )
+
 }
 
-export default App;
+export default App

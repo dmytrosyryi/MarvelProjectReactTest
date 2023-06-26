@@ -1,4 +1,5 @@
 import img from './spinner.gif'
+import React from 'react';
 
 const Spinner = () => {
     return (

@@ -1,4 +1,9 @@
-import './appHeader.scss';
+import React from 'react';
+
+import '../appHeader/appHeader.scss';
+
+
+
 
 const AppHeader = () => {
     return (

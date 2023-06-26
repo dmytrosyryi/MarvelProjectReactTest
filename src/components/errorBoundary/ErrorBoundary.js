@@ -1,5 +1,5 @@
-import { Component } from "react/cjs/react.development";
-import ErrorMessage from "../error/Error";
+import React, { Component } from 'react'
+import ErrorMessage from '../error/Error'
 
 class ErrorBoundary extends Component {
     state = {

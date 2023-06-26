@@ -1,4 +1,4 @@
-import { Component } from 'react/cjs/react.development';
+import React, { Component } from 'react';
 
 import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
@@ -82,7 +82,7 @@ const View = ({ char }) => {
         imgStyle = { 'objectFit': 'contain' }
     }
     return (
-        <>
+        <div>
             <div className="char__basics">
                 <img src={thumbnail} alt={name} style={imgStyle} />
                 <div>
@@ -115,7 +115,7 @@ const View = ({ char }) => {
                     })
                 }
             </ul>
-        </>
+        </div>
     )
 }
 

@@ -1,8 +1,9 @@
 import './skeleton.scss';
+import React from 'react';
 
 const Skeleton = () => {
     return (
-        <>
+        <div>
             <p className="char__select">Please select a character to see information</p>
             <div className="skeleton">
                 <div className="pulse skeleton__header">
@@ -13,7 +14,7 @@ const Skeleton = () => {
                 <div className="pulse skeleton__block"></div>
                 <div className="pulse skeleton__block"></div>
             </div>
-        </>
+        </div>
     )
 }
 
