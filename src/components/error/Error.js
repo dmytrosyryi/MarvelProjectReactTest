@@ -1,5 +1,4 @@
 import img from './error.gif'
-import React from 'react'
 
 const ErrorMessage = () => {
     return (

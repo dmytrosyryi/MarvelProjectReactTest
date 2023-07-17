@@ -1,50 +1,38 @@
-
-import React, { useState } from 'react';
+import { lazy, Suspense } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import AppHeader from "../appHeader/AppHeader";
-import RandomChar from "../randomChar/RandomChar";
-import CharList from "../charList/CharList";
-import CharInfo from "../charInfo/CharInfo";
-import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import Spinner from '../spinner/Spinner';
 
-import decoration from '../../resources/img/vision.png';
+const Page404 = lazy(() => import("../pages/Page404"))
+const MainPage = lazy(() => import("../pages/MainPage"))
+const ComicsPage = lazy(() => import("../pages/ComicsPage"))
+const SingleComicPage = lazy(() => import("../pages/SingleComicPage"))
+const SinglePage = lazy(() => import("../pages/SinglePage"))
+const SingleCharacterLoyout = lazy(() => import("../pages/singleCharacterLoyout/SingleCharacterLoyout"))
+const SingleComicLoyout = lazy(() => import("../pages/SingleComicLoyout/SingleComicLoyout"))
+
 
 const App = () => {
 
-    const [selectedChar, setChar] = useState(null)
-
-    const scrollToCharInfo = () => {
-        const scrollBox = document.querySelector('.char__info')
-        if (scrollBox) {
-            scrollBox.scrollIntoView({ behavior: "smooth" })
-        }
-
-    }
-
-    const onSelectedChar = (id) => {
-        scrollToCharInfo()
-        setChar(id)
-    }
-
-
     return (
-        <div className="app">
-            <AppHeader />
-            <main>
-                <ErrorBoundary>
-                    <RandomChar />
-                </ErrorBoundary>
-                <div className="char__content">
-                    <ErrorBoundary>
-                        <CharList onSelectedChar={onSelectedChar} />
-                    </ErrorBoundary>
-                    <ErrorBoundary>
-                        <CharInfo charId={selectedChar} />
-                    </ErrorBoundary>
-                </div>
-                <img className="bg-decoration" src={decoration} alt="vision" />
-            </main>
-        </div>
+        <Router>
+            <div className="app">
+                <AppHeader />
+                <main>
+                    <Suspense fallback={<Spinner />}>
+                        <Routes>
+                            <Route path="/" element={<MainPage />} />
+                            <Route path="/comics" element={<ComicsPage />} />
+                            <Route path="/comics/:id" element={<SinglePage Component={SingleComicLoyout} dataType='comic' />} />
+                            <Route path="/characters/:id" element={<SinglePage Component={SingleCharacterLoyout} dataType='character' />} />
+                            <Route path="*" element={<Page404 />} />
+                        </Routes>
+                    </Suspense>
+                </main>
+            </div>
+        </Router>
+
     )
 
 }

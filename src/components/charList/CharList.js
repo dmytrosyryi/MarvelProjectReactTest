@@ -1,9 +1,11 @@
 
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
+
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../error/Error';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 
 import './charList.scss';
 
@@ -11,28 +13,23 @@ import './charList.scss';
 const CharList = (props) => {
 
     const [charList, setCharList] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setEror] = useState(false)
     const [newItemLoading, setNewItemLoading] = useState(false)
     const [offset, setOffset] = useState(210)
-    const [charEnded, setChatEnded] = useState(false)
+    const [charEnded, setCharEnded] = useState(false)
 
-    const marvelService = new MarvelService()
+    const { loading, error, getAllCharacters } = useMarvelService()
 
     useEffect(() => {
-        onRequest()
+        onRequest(offset, true)
     }, [])
 
-    const onRequest = (offset) => {
-        onCharListLoading()
-        marvelService.getAllCharacters(offset)
+    const onRequest = (offset, initial) => {
+        initial ? setNewItemLoading(false) : setNewItemLoading(true)
+        getAllCharacters(offset)
             .then(onCharListLoaded)
-            .catch(onErrorMessages)
     }
 
-    const onCharListLoading = () => {
-        setNewItemLoading(true)
-    }
+
 
     const onCharListLoaded = (newCharList) => {
         let ended = false
@@ -40,15 +37,9 @@ const CharList = (props) => {
             ended = true
         }
         setCharList(charList => [...charList, ...newCharList])
-        setLoading(loading => false)
         setNewItemLoading(newItemLoading => false)
         setOffset(offset => offset + 9)
-        setChatEnded(charEnded => ended)
-    }
-
-    const onErrorMessages = () => {
-        setEror(true)
-        setLoading(loading => false)
+        setCharEnded(charEnded => ended)
     }
 
     const itemsRef = useRef([])
@@ -66,29 +57,36 @@ const CharList = (props) => {
                 imgStyle = { 'objectFit': 'unset' };
             }
             return (
-                <li
-                    className="char__item"
-                    tabIndex={0}
+                <CSSTransition
+                    classNames="char__item"
                     key={item.id}
-                    ref={el => itemsRef.current[i] = el}
-                    onClick={() => {
-                        props.onSelectedChar(item.id)
-                        focusOnItem(i)
-                    }}
-                    onKeyUp={(e) => {
-                        if (e.key === ' ' || e.key === 'Enter') {
+                    timeout={500}
+                >
+                    <li
+                        className="char__item"
+                        tabIndex={0}
+                        ref={el => itemsRef.current[i] = el}
+                        onClick={() => {
                             props.onSelectedChar(item.id)
                             focusOnItem(i)
-                        }
-                    }}>
-                    <img src={item.thumbnail} alt={item.name} style={imgStyle} />
-                    <div className="char__name">{item.name}</div>
-                </li>
+                        }}
+                        onKeyUp={(e) => {
+                            if (e.key === ' ' || e.key === 'Enter') {
+                                props.onSelectedChar(item.id)
+                                focusOnItem(i)
+                            }
+                        }}>
+                        <img src={item.thumbnail} alt={item.name} style={imgStyle} />
+                        <div className="char__name">{item.name}</div>
+                    </li>
+                </CSSTransition>
             )
         })
         return (
             <ul className="char__grid">
-                {items}
+                <TransitionGroup component={null}>
+                    {items}
+                </TransitionGroup>
             </ul>
         )
 
@@ -97,14 +95,13 @@ const CharList = (props) => {
     const items = renderItems(charList)
 
     const errorMessage = error ? <ErrorMessage /> : null
-    const spinner = loading ? <Spinner /> : null
-    const content = !(error || loading) ? items : null
+    const spinner = loading && !newItemLoading ? <Spinner /> : null
 
     return (
         <div className="char__list">
             {errorMessage}
             {spinner}
-            {content}
+            {items}
             <button
                 className="button button__main button__long"
                 disabled={newItemLoading}
