@@ -7,14 +7,10 @@ import ErrorMessage from '../error/Error';
 import './singleComicPage.scss';
 import { useEffect, useState } from 'react';
 
-
-
-
 const SingleComicPage = () => {
     const { comicId } = useParams()
     const [comic, setComics] = useState(null)
     const { error, loading, getSingleComic, clearError } = useMarvelService()
-
     useEffect(() => {
         updateComic(comicId)
     }, [comicId])
@@ -29,12 +25,9 @@ const SingleComicPage = () => {
         setComics(comic)
     }
 
-
-
     const errorMessage = error ? <ErrorMessage /> : null
     const spinner = loading ? <Spinner /> : null
     const content = !(error || loading || !comic) ? <View comic={comic} /> : null
-
 
     return (
         <>
@@ -43,7 +36,6 @@ const SingleComicPage = () => {
             {content}
         </>
     )
-
 
 }
 const View = ({ comic }) => {
